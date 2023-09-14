@@ -24,15 +24,17 @@ public class Game {
     public void play() {
         Board board1 = new Board();
         Board board2 = new Board();
+        System.out.println(player1.getName() + ", ваш черед расставлять корабли!");
         player1.setBoard(placeShips(board1));
+        System.out.println(player2.getName() + ", ваш черед расставлять корабли!");
         player2.setBoard(placeShips(board2));
 
         while (board1.getLives() > 0 && board2.getLives() > 0) {
             if (turn == 0) {
-                System.out.println(player1 + ", твой ход!");
+                System.out.println(player1.getName() + ", твой ход!");
                 animateAttackAndUpdateTurn(board2);
             } else {
-                System.out.println(player2 + ", твой ход!");
+                System.out.println(player2.getName() + ", твой ход!");
                 animateAttackAndUpdateTurn(board1);
             }
         }
@@ -55,7 +57,7 @@ public class Game {
     }
 
     private void animateAttackAndUpdateTurn(Board board) {
-        board.displayBoard(true);
+        System.out.println(board.displayBoard(true));
         if (attackWithRetries(board)) {
             System.out.println("Есть попадание!");
         } else {
