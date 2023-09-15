@@ -9,11 +9,27 @@ import org.example.ship.*;
 
 import java.util.Scanner;
 
+/***
+ * Игра морской бой.
+ * Содержит двух игроков. Позволяет указать откуда читать данные. Определяет чья очередь атаковать.
+ */
 public class Game {
 
+    /***
+     * Входной поток в виде сканера.
+     */
     private final Scanner input;
+    /***
+     * Первый игрок.
+     */
     private Player player1;
+    /***
+     * Второй игрок.
+     */
     private Player player2;
+    /***
+     * Очередь делать ход. 0 - первого игрока, 1 - второго.
+     */
     private int turn;
 
     public Game(Scanner input) {
@@ -22,6 +38,9 @@ public class Game {
         createPlayers();
     }
 
+    /***
+     * Запускает игру.
+     */
     public void play() {
         Board board1 = new Board();
         Board board2 = new Board();
@@ -42,6 +61,9 @@ public class Game {
         defineAndDisplayWinner();
     }
 
+    /***
+     * Предлагает игрокам представиться. Для ввода использует входной поток this.input.
+     */
     private void createPlayers() {
         System.out.println("Укажите имя первого игрока: ");
         this.player1 = new Player(this.input.nextLine());
@@ -49,14 +71,23 @@ public class Game {
         this.player2 = new Player(this.input.nextLine());
     }
 
+    /***
+     * Определяет победителя в конце игры.
+     */
     private void defineAndDisplayWinner() {
-        if (this.player1.getBoard().getLives() == 0) {
+        if (this.player1.getBoard().getLives() <= 0) {
             System.out.println("Победитель: !!! " + this.player2.getName() + " !!!");
         } else {
             System.out.println("Победитель: !!! " + this.player1.getName() + " !!!");
         }
     }
 
+    /***
+     * Выводит сообщение о результате атаки.
+     * Если было попадание по кораблю противника, то игрок делает еще ход, пока не промахнется.
+     * Если был совершен промах, то передает очередь следующему игроку.
+     * @param board доска которую нужно атаковать.
+     */
     private void animateAttackAndUpdateTurn(Board board) {
         System.out.println(board.displayBoard(true));
         switch (attackWithRetries(board)) {
@@ -73,6 +104,11 @@ public class Game {
         }
     }
 
+    /***
+     * Предлагает игроку указать координаты для атаки, пока он не введет их без ошибок.
+     * @param board доска которую нужно атаковать.
+     * @return результат атаки квадрата: HIT, MISS или SUNKEN.
+     */
     private Cell.Status attackWithRetries(Board board) {
         System.out.println("Введите координаты точки для атаки: ");
         while (true) {
@@ -84,6 +120,13 @@ public class Game {
         }
     }
 
+    /***
+     * Предлагает игроку разместить все корабли на доске.
+     * Это: 1 линкор (4 клетки), два крейсера (3 клетки), три эсминца (2 клетки),
+     * четыре торпедных катера (1 клетка).
+     * @param board доска которую нужно атаковать.
+     * @return доску с размещенными кораблями.
+     */
     private Board placeShips(Board board) {
         System.out.println(board.displayBoard(false));
         System.out.print("Введите координаты 4-ёх точек для постановки линкора: ");
@@ -110,6 +153,11 @@ public class Game {
         return board;
     }
 
+    /***
+     * Запрашивает указанное количество точек из входного канала.
+     * @param count количество точек.
+     * @return массив координат вида ["a7", "a8", "a9"].
+     */
     private String[] getCoordinatesFromInput(int count) {
         String[] coordinates = new String[count];
         for (int i = 0; i < count; i++) {
@@ -118,6 +166,11 @@ public class Game {
         return coordinates;
     }
 
+    /***
+     * Предлагает игроку добавить корабль на доску, пока не будут введены валидные координаты.
+     * @param board доска, на которую нужно добавить корабль.
+     * @param ship корабль, который нужно добавить.
+     */
     private void addShipToBoardWithRetries(Board board, Ship ship) {
         boolean valid = false;
         while (!valid) {
