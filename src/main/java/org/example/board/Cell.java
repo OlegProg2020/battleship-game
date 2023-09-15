@@ -22,8 +22,12 @@ public class Cell {
             this.status = Status.MISS;
         } else if (this.status == Status.SHIP) {
             //noinspection DataFlowIssue
-            ship.hit();
-            this.status = Status.HIT;
+            this.ship.hit();
+            if (this.ship.isSunk()) {
+                this.status = Status.SUNKEN;
+            } else {
+                this.status = Status.HIT;
+            }
         }
         return this.status;
     }
@@ -34,7 +38,8 @@ public class Cell {
 
     public enum Status {
         EMPTY("-"), SHIP("-", "●"),
-        HIT("X"), MISS("○");
+        HIT("*"), MISS("○"),
+        SUNKEN("X");
         private final String publicValue;
         private final String privateValue;
 

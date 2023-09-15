@@ -1,6 +1,7 @@
 package org.example.component;
 
 import org.example.board.Board;
+import org.example.board.Cell;
 import org.example.exception.CoordinateIsInvalidException;
 import org.example.exception.InvalidCoordinatesCountException;
 import org.example.exception.ShipPlacementInvalidException;
@@ -58,15 +59,21 @@ public class Game {
 
     private void animateAttackAndUpdateTurn(Board board) {
         System.out.println(board.displayBoard(true));
-        if (attackWithRetries(board)) {
-            System.out.println("Есть попадание!");
-        } else {
-            System.out.println("Промах!");
-            this.turn = (this.turn + 1) % 2;
+        switch (attackWithRetries(board)) {
+            case HIT -> {
+                System.out.println("Есть попадание!");
+            }
+            case SUNKEN -> {
+                System.out.println("Уничтожен!");
+            }
+            default -> {
+                System.out.println("Промах!");
+                this.turn = (this.turn + 1) % 2;
+            }
         }
     }
 
-    private boolean attackWithRetries(Board board) {
+    private Cell.Status attackWithRetries(Board board) {
         System.out.println("Введите координаты точки для атаки: ");
         while (true) {
             try {

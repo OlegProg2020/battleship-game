@@ -16,14 +16,15 @@ public class Board {
         this.lives = 0;
     }
 
-    public boolean attack(String coordinates) throws CoordinateIsInvalidException {
+    public Cell.Status attack(String coordinates) throws CoordinateIsInvalidException {
         int[][] numbers = convertCoordinatesToNumbers(coordinates);
-        if (this.grid[numbers[0][0]][numbers[0][1]].attack() == Cell.Status.HIT) {
+
+        Cell.Status before = this.grid[numbers[0][0]][numbers[0][1]].getStatus();
+        Cell.Status after = this.grid[numbers[0][0]][numbers[0][1]].attack();
+        if (before == Cell.Status.SHIP && (after == Cell.Status.HIT || after == Cell.Status.SUNKEN)) {
             this.lives--;
-            return true;
-        } else {
-            return false;
         }
+        return after;
     }
 
     public void addShip(Ship ship, String... coordinates)
@@ -47,8 +48,13 @@ public class Board {
             throws CoordinateIsInvalidException {
         int[][] numbers = new int[coordinates.length][2];
         for (int i = 0; i < coordinates.length; i++) {
-            numbers[i][0] = coordinates[i].charAt(0) - 97;
-            numbers[i][1] = coordinates[i].charAt(1) - 48;
+            try {
+                numbers[i][0] = coordinates[i].charAt(0) - 97;
+                numbers[i][1] = coordinates[i].charAt(1) - 48;
+            } catch (StringIndexOutOfBoundsException e) {
+                throw new CoordinateIsInvalidException();
+            }
+
 
             if (numbers[i][0] < 0 || numbers[i][0] > 9
                     || numbers[i][1] < 0 || numbers[i][1] > 9) {
@@ -77,8 +83,8 @@ public class Board {
         int startJ = Math.max(coordinates[0][1] - 1, 0);
         int finishI = Math.min(coordinates[coordinates.length - 1][0] + 1, SIZE - 1);
         int finishJ = Math.min(coordinates[coordinates.length - 1][1] + 1, SIZE - 1);
-        for (int i = startI; i < finishI; i++) {
-            for (int j = startJ; j < finishJ; j++) {
+        for (int i = startI; i <= finishI; i++) {
+            for (int j = startJ; j <= finishJ; j++) {
                 if (this.grid[i][j].getStatus() != Cell.Status.EMPTY) {
                     return false;
                 }
