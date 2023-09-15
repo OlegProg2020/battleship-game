@@ -35,13 +35,14 @@ public class Game {
     public Game(Scanner input) {
         this.turn = 0;
         this.input = input;
-        createPlayers();
     }
 
     /***
      * Запускает игру.
      */
     public void play() {
+        createPlayers();
+
         Board board1 = new Board();
         Board board2 = new Board();
         System.out.println(player1.getName() + ", ваш черед расставлять корабли!");
@@ -61,13 +62,28 @@ public class Game {
         defineAndDisplayWinner();
     }
 
+    public void showInstructions() {
+        System.out.println("Добро пожаловать в Морской бой!");
+        System.out.println("\nКоординаты точек вводите последовательно в виде \"буквацифра\"");
+        System.out.println("\tВерно: a7 a8 a9");
+        System.out.println("\tНеверно: a7 a9 a8");
+        System.out.println("\tНеверно: 7a 8a 9a");
+        System.out.println("\nОбозначения: ");
+        System.out.println("\tПусто: -");
+        System.out.println("\tКорабль: ●");
+        System.out.println("\tПромах: ○");
+        System.out.println("\tПопадание: -");
+        System.out.println("\tПотопленный корабль: X");
+        System.out.println("\nОбратите внимание, что X отмечается лишь часть корабля, после попадания в которую он был потоплен.\n");
+    }
+
     /***
      * Предлагает игрокам представиться. Для ввода использует входной поток this.input.
      */
     private void createPlayers() {
-        System.out.println("Укажите имя первого игрока: ");
+        System.out.print("Укажите имя первого игрока: ");
         this.player1 = new Player(this.input.nextLine());
-        System.out.println("Введите имя второго игрока: ");
+        System.out.print("Введите имя второго игрока: ");
         this.player2 = new Player(this.input.nextLine());
     }
 
@@ -76,9 +92,9 @@ public class Game {
      */
     private void defineAndDisplayWinner() {
         if (this.player1.getBoard().getLives() <= 0) {
-            System.out.println("Победитель: !!! " + this.player2.getName() + " !!!");
+            System.out.print("Победитель: !!! " + this.player2.getName() + " !!!");
         } else {
-            System.out.println("Победитель: !!! " + this.player1.getName() + " !!!");
+            System.out.print("Победитель: !!! " + this.player1.getName() + " !!!");
         }
     }
 
@@ -110,7 +126,7 @@ public class Game {
      * @return результат атаки квадрата: HIT, MISS или SUNKEN.
      */
     private Cell.Status attackWithRetries(Board board) {
-        System.out.println("Введите координаты точки для атаки: ");
+        System.out.print("Введите координаты точки для атаки: ");
         while (true) {
             try {
                 return board.attack(getCoordinatesFromInput(1)[0]);
