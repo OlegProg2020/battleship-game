@@ -55,7 +55,6 @@ public class Board {
                 throw new CoordinateIsInvalidException();
             }
 
-
             if (numbers[i][0] < 0 || numbers[i][0] > 9
                     || numbers[i][1] < 0 || numbers[i][1] > 9) {
                 throw new CoordinateIsInvalidException();
